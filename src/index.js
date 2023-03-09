@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import 'bootstrap/scss/bootstrap.scss';
+import './stylesheets/all.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import  axios  from 'axios';
+import { HashRouter } from 'react-router-dom'
 
-axios.default.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <HashRouter>
+      <App />
+    </HashRouter>
   </React.StrictMode>
 );
 
