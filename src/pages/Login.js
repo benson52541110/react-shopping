@@ -1,27 +1,37 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Login() {
-    const [data, setData] = useState({
-        username:'',
-        password:''
-    })
-    const handleChange =(e)=>{
-        const {name,value} = e.target;
-        console.log(name,value);
-        setData({
-            ...data,[name]:value
-        })
-        console.log(data);
-    }
-    const submit = async(e)=>{
-        const res = await axios.post(`/v2/admin/signin`,data)
-        console.log(res);
-        const {token} = res.data;
-        axios.defaults.headers.common['Authorization']= token
-        const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products/all`)
-        console.log(productRes);
-    }
+	const [data, setData] = useState({
+		username: "",
+		password: "",
+	});
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setData({
+			...data,
+			[name]: value,
+		});
+	};
+	const submit = async (e) => {
+		const res = await axios.post(`/v2/admin/signin`, data);
+		console.log(res);
+		const { token, expired } = res.data;
+		document.cookie = `hexToken=${token};expires=${new Date(expired)}`;
+	};
+	useEffect(() => {
+		const token = document.cookie
+			.split("; ")
+			.find((row) => row.startsWith("hexToken="))
+			?.split("=")[1];
+		console.log(token);
+		axios.defaults.headers.common["Authorization"] = token;
+		  (async()=>{
+			const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products/all`)
+		    console.log(productRes);
+		  })()
+	}, []);
+
 	return (
 		<div className="container py-5">
 			<div className="row justify-content-center">
@@ -39,7 +49,7 @@ function Login() {
 								name="username"
 								type="email"
 								placeholder="Email Address"
-                                onChange={handleChange}
+								onChange={handleChange}
 							/>
 						</label>
 					</div>
@@ -52,7 +62,7 @@ function Login() {
 								name="password"
 								id="password"
 								placeholder="name@example.com"
-                                onChange={handleChange}
+								onChange={handleChange}
 							/>
 						</label>
 					</div>
