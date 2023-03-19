@@ -1,7 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+	const navigate = useNavigate();
 	const [data, setData] = useState({
 		username: "",
 		password: "",
@@ -18,19 +20,11 @@ function Login() {
 		console.log(res);
 		const { token, expired } = res.data;
 		document.cookie = `hexToken=${token};expires=${new Date(expired)}`;
+		if(res.data.success){
+			navigate('/admin/products')
+		}
 	};
-	useEffect(() => {
-		const token = document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("hexToken="))
-			?.split("=")[1];
-		console.log(token);
-		axios.defaults.headers.common["Authorization"] = token;
-		  (async()=>{
-			const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products/all`)
-		    console.log(productRes);
-		  })()
-	}, []);
+
 
 	return (
 		<div className="container py-5">

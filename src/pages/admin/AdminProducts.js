@@ -1,4 +1,18 @@
+import { useEffect } from "react";
+import axios from "axios";
 function AdminProducts() {
+  useEffect(() => {
+		const token = document.cookie
+			.split("; ")
+			.find((row) => row.startsWith("hexToken="))
+			?.split("=")[1];
+		console.log(token);
+		axios.defaults.headers.common["Authorization"] = token;
+		  (async()=>{
+			const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products/all`)
+		    console.log(productRes);
+		  })()
+	}, []);
     return(<div className="p-3">
     <h3>產品列表</h3>
     <hr />
