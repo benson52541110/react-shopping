@@ -19,8 +19,7 @@ function Dashboard() {
     }
     (async () => {
       try {
-        const res = await axios.get('/v2/admin/products')
-        console.log(res)
+        await axios.post('/v2/api/user/check')
       } catch (error) {
         console.log(error)
         if(!error.response.data.success){
