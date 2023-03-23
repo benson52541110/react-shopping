@@ -1,34 +1,67 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import ProductModal from '../components/ProductModal';
+import DeleteModal from '../components/DeleteModal';
 import { Modal } from 'bootstrap';
 function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState({});
   const [type, setType] = useState('create');
   const [tempProduct, setTempProduct] = useState({});
-
   const productModal = useRef(null);
+  const deleteModal = useRef(null);
+
   useEffect(() => {
     productModal.current = new Modal('#productModal', {
       backdrop: 'static',
     });
+    deleteModal.current = new Modal('#deleteModal', {
+      backdrop: 'static',
+    });
     getProducts();
   }, []);
+
   const getProducts = async () => {
     const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/admin/products`);
     console.log(productRes);
     setProducts(productRes.data.products);
     setPagination(productRes.data.pagination);
   };
+
   const openProductModal = (type, product) => {
     setType(type);
     setTempProduct(product);
     productModal.current.show();
   };
+
   const closeProductModal = () => {
     productModal.current.hide();
   };
+
+  const openDeleteModal = (product) => {
+    setTempProduct(product);
+    deleteModal.current.show();
+  };
+
+  const closeDeleteModal = () => {
+    deleteModal.current.hide();
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      const res = await axios.delete(
+        `/v2/api/${process.env.REACT_APP_API_PATH}/admin/product/${id}`
+      );
+      console.log(res);
+      if (res.data.success) {
+        getProducts();
+        deleteModal.current.hide();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="p-3">
       <ProductModal
@@ -37,6 +70,12 @@ function AdminProducts() {
         tempProduct={tempProduct}
         type={type}
       />
+      <DeleteModal
+        close={closeDeleteModal}
+        text={tempProduct.title}
+        handleDelete={deleteProduct}
+        id={tempProduct.id}
+      ></DeleteModal>
       <h3>產品列表</h3>
       <hr />
       <div className="text-end">
@@ -74,7 +113,11 @@ function AdminProducts() {
                   >
                     編輯
                   </button>
-                  <button type="button" className="btn btn-outline-danger btn-sm ms-2">
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm ms-2"
+                    onClick={() => openDeleteModal(product)}
+                  >
                     刪除
                   </button>
                 </td>
