@@ -1,41 +1,38 @@
-import {Outlet,useNavigate} from 'react-router-dom'
-import axios from 'axios'
-import { useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect } from 'react';
 function Dashboard() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const logout = () => {
-    document.cookie = 'hexToken=;'
-    navigate('/login')
-  }
+    document.cookie = 'hexToken=;';
+    navigate('/login');
+  };
 
   const token = document.cookie
-			.split("; ")
-			.find((row) => row.startsWith("hexToken="))
-			?.split("=")[1];
-		axios.defaults.headers.common["Authorization"] = token;
+    .split('; ')
+    .find((row) => row.startsWith('hexToken='))
+    ?.split('=')[1];
+  axios.defaults.headers.common['Authorization'] = token;
   useEffect(() => {
-    if(!token){
-      return navigate('/login')
+    if (!token) {
+      return navigate('/login');
     }
     (async () => {
       try {
-        await axios.post('/v2/api/user/check')
+        await axios.post('/v2/api/user/check');
       } catch (error) {
-        console.log(error)
-        if(!error.response.data.success){
-          navigate('/login')
+        console.log(error);
+        if (!error.response.data.success) {
+          navigate('/login');
         }
       }
-    })()
-
-  }, [navigate,token])
+    })();
+  }, [navigate, token]);
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-dark">
         <div className="container-fluid">
-          <p className="text-white mb-0">
-            HEX EATS 後台管理系統
-          </p>
+          <p className="text-white mb-0">HEX EATS 後台管理系統</p>
           <button
             className="navbar-toggler"
             type="button"
@@ -75,12 +72,10 @@ function Dashboard() {
             </a>
           </ul>
         </div>
-        <div className="w-100">
-          { token && <Outlet />}
-        </div>
+        <div className="w-100">{token && <Outlet />}</div>
       </div>
     </>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;
