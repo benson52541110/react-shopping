@@ -1,48 +1,48 @@
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import ProductModal from '../components/ProductModal';
+import CouponModal from '../components/CouponModal';
 import DeleteModal from '../components/DeleteModal';
 import Pagination from '../components/Pagination';
 import { Modal } from 'bootstrap';
-function AdminProducts() {
-  const [products, setProducts] = useState([]);
+function AdminCoupons() {
+  const [coupons, setCoupons] = useState([]);
   const [pagination, setPagination] = useState({});
   const [type, setType] = useState('create');
-  const [tempProduct, setTempProduct] = useState({});
-  const productModal = useRef(null);
+  const [tempCoupon, setTempCoupon] = useState({});
+  const couponModal = useRef(null);
   const deleteModal = useRef(null);
 
   useEffect(() => {
-    productModal.current = new Modal('#productModal', {
+    couponModal.current = new Modal('#productModal', {
       backdrop: 'static',
     });
     deleteModal.current = new Modal('#deleteModal', {
       backdrop: 'static',
     });
-    getProducts();
+    getCoupons();
   }, []);
 
-  const getProducts = async (page = 1) => {
-    const productRes = await axios.get(
-      `/v2/api/${process.env.REACT_APP_API_PATH}/admin/products?page=${page}`
+  const getCoupons = async (page = 1) => {
+    const res = await axios.get(
+      `/v2/api/${process.env.REACT_APP_API_PATH}/admin/coupons?page=${page}`
     );
-    console.log(productRes);
-    setProducts(productRes.data.products);
-    setPagination(productRes.data.pagination);
+    console.log(res);
+    setCoupons(res.data.coupons);
+    setPagination(res.data.pagination);
   };
 
-  const openProductModal = (type, product) => {
+  const openCouponModal = (type, item) => {
     setType(type);
-    setTempProduct(product);
-    productModal.current.show();
+    setTempCoupon(product);
+    couponModal.current.show();
   };
 
-  const closeProductModal = () => {
-    productModal.current.hide();
+  const closeCouponModal = () => {
+    couponModal.current.hide();
   };
 
   const openDeleteModal = (product) => {
-    setTempProduct(product);
+    setTempCoupon(product);
     deleteModal.current.show();
   };
 
@@ -50,14 +50,14 @@ function AdminProducts() {
     deleteModal.current.hide();
   };
 
-  const deleteProduct = async (id) => {
+  const deleteCoupon = async (id) => {
     try {
       const res = await axios.delete(
-        `/v2/api/${process.env.REACT_APP_API_PATH}/admin/product/${id}`
+        `/v2/api/${process.env.REACT_APP_API_PATH}/admin/coupon/${id}`
       );
       console.log(res);
       if (res.data.success) {
-        getProducts();
+        getCoupons();
         deleteModal.current.hide();
       }
     } catch (error) {
@@ -67,17 +67,17 @@ function AdminProducts() {
 
   return (
     <div className="p-3">
-      <ProductModal
-        closeProductModal={closeProductModal}
-        getProducts={getProducts}
-        tempProduct={tempProduct}
+      <CouponModal
+        closeProductModal={closeCouponModal}
+        getProducts={getCoupons}
+        tempProduct={tempCoupon}
         type={type}
       />
       <DeleteModal
         close={closeDeleteModal}
-        text={tempProduct.title}
-        handleDelete={deleteProduct}
-        id={tempProduct.id}
+        text={tempCoupon.title}
+        handleDelete={deleteCoupon}
+        id={tempCoupon.id}
       ></DeleteModal>
       <h3>產品列表</h3>
       <hr />
@@ -85,7 +85,7 @@ function AdminProducts() {
         <button
           type="button"
           className="btn btn-primary btn-sm"
-          onClick={() => openProductModal('create', {})}
+          onClick={() => openCouponModal('create', {})}
         >
           建立新商品
         </button>
@@ -101,7 +101,7 @@ function AdminProducts() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => {
+          {coupons.map((product) => {
             return (
               <tr key={product.id}>
                 <td>{product.category}</td>
@@ -112,7 +112,7 @@ function AdminProducts() {
                   <button
                     type="button"
                     className="btn btn-primary btn-sm"
-                    onClick={() => openProductModal('edit', product)}
+                    onClick={() => openCouponModal('edit', product)}
                   >
                     編輯
                   </button>
@@ -130,8 +130,8 @@ function AdminProducts() {
         </tbody>
       </table>
 
-      <Pagination pagination={pagination} changePage={getProducts}></Pagination>
+      <Pagination pagination={pagination} changePage={getCoupons}></Pagination>
     </div>
   );
 }
-export default AdminProducts;
+export default AdminCoupons;

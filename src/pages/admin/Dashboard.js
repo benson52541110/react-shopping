@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 function Dashboard() {
@@ -58,18 +58,18 @@ function Dashboard() {
       <div className="d-flex" style={{ minHeight: 'calc(100vh - 56px)' }}>
         <div className="bg-light" style={{ width: '200px' }}>
           <ul className="list-group list-group-flush">
-            <a className="list-group-item list-group-item-action py-3" to="/admin/products">
+            <Link className="list-group-item list-group-item-action py-3" to="/admin/products">
               <i className="bi bi-cup-fill me-2" />
               產品列表
-            </a>
-            <a className="list-group-item list-group-item-action py-3" to="/admin/coupons">
+            </Link>
+            <Link className="list-group-item list-group-item-action py-3" to="/admin/coupons">
               <i className="bi bi-ticket-perforated-fill me-2" />
               優惠卷列表
-            </a>
-            <a className="list-group-item list-group-item-action py-3" to="/admin/orders">
+            </Link>
+            <Link className="list-group-item list-group-item-action py-3" to="/admin/orders">
               <i className="bi bi-receipt me-2" />
               訂單列表
-            </a>
+            </Link>
           </ul>
         </div>
         <div className="w-100">{token && <Outlet />}</div>
