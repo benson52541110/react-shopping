@@ -33,7 +33,7 @@ function AdminCoupons() {
 
   const openCouponModal = (type, item) => {
     setType(type);
-    setTempCoupon(product);
+    setTempCoupon(item);
     couponModal.current.show();
   };
 
