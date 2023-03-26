@@ -29,7 +29,6 @@ function ProductModal({ closeProductModal, getProducts, type, tempProduct }) {
     } else if (type === 'edit') {
       setTempData(tempProduct);
     }
-    console.log(type, tempProduct);
   }, [type, tempProduct]);
 
   const handleChange = (e) => {
@@ -63,7 +62,6 @@ function ProductModal({ closeProductModal, getProducts, type, tempProduct }) {
       const response = await axios[apiMethod](api, {
         data: tempData,
       });
-      console.log(response);
       closeProductModal();
       getProducts();
     } catch (error) {

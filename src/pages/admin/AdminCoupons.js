@@ -26,7 +26,6 @@ function AdminCoupons() {
     const res = await axios.get(
       `/v2/api/${process.env.REACT_APP_API_PATH}/admin/coupons?page=${page}`
     );
-    console.log(res);
     setCoupons(res.data.coupons);
     setPagination(res.data.pagination);
   };
@@ -37,7 +36,7 @@ function AdminCoupons() {
     couponModal.current.show();
   };
 
-  const closeCouponModal = () => {
+  const closeModal = () => {
     couponModal.current.hide();
   };
 
@@ -55,7 +54,6 @@ function AdminCoupons() {
       const res = await axios.delete(
         `/v2/api/${process.env.REACT_APP_API_PATH}/admin/coupon/${id}`
       );
-      console.log(res);
       if (res.data.success) {
         getCoupons();
         deleteModal.current.hide();
@@ -68,9 +66,9 @@ function AdminCoupons() {
   return (
     <div className="p-3">
       <CouponModal
-        closeProductModal={closeCouponModal}
-        getProducts={getCoupons}
-        tempProduct={tempCoupon}
+        closeModal={closeModal}
+        getCoupons={getCoupons}
+        tempCoupon={tempCoupon}
         type={type}
       />
       <DeleteModal
@@ -79,7 +77,7 @@ function AdminCoupons() {
         handleDelete={deleteCoupon}
         id={tempCoupon.id}
       ></DeleteModal>
-      <h3>產品列表</h3>
+      <h3>優惠券列表</h3>
       <hr />
       <div className="text-end">
         <button
@@ -87,15 +85,16 @@ function AdminCoupons() {
           className="btn btn-primary btn-sm"
           onClick={() => openCouponModal('create', {})}
         >
-          建立新商品
+          建立新優惠券
         </button>
       </div>
       <table className="table">
         <thead>
           <tr>
-            <th scope="col">分類</th>
-            <th scope="col">名稱</th>
-            <th scope="col">售價</th>
+            <th scope="col">標題</th>
+            <th scope="col">折扣</th>
+            <th scope="col">到期日</th>
+            <th scope="col">優惠碼</th>
             <th scope="col">啟用狀態</th>
             <th scope="col">編輯</th>
           </tr>
@@ -104,9 +103,10 @@ function AdminCoupons() {
           {coupons.map((product) => {
             return (
               <tr key={product.id}>
-                <td>{product.category}</td>
                 <td>{product.title}</td>
-                <td>{product.price}</td>
+                <td>{product.percent}</td>
+                <td>{product.due_date}</td>
+                <td>{new Date(product.code).toDateString()}</td>
                 <td>{product.is_enabled ? '啟用' : '未啟用'}</td>
                 <td>
                   <button

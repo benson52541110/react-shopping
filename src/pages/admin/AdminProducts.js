@@ -26,7 +26,6 @@ function AdminProducts() {
     const productRes = await axios.get(
       `/v2/api/${process.env.REACT_APP_API_PATH}/admin/products?page=${page}`
     );
-    console.log(productRes);
     setProducts(productRes.data.products);
     setPagination(productRes.data.pagination);
   };
@@ -55,7 +54,6 @@ function AdminProducts() {
       const res = await axios.delete(
         `/v2/api/${process.env.REACT_APP_API_PATH}/admin/product/${id}`
       );
-      console.log(res);
       if (res.data.success) {
         getProducts();
         deleteModal.current.hide();

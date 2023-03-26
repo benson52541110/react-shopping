@@ -1,5 +1,4 @@
 function Pagination({ pagination, changePage }) {
-  console.log(changePage);
   return (
     <nav aria-label="Page navigation example">
       <ul className="pagination">
