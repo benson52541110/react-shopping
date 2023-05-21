@@ -1,14 +1,35 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 function ProductDetail() {
   const [product, setProduct] = useState({});
+  const [cartQuantity, setCartQuantity] = useState(1);
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const { getCart } = useOutletContext();
 
   const getProduct = async (id) => {
     const productRes = await axios.get(`/v2/api/${process.env.REACT_APP_API_PATH}/product/${id}`);
     console.log(productRes);
     setProduct(productRes.data.product);
+  };
+  const addToCart = async () => {
+    const data = {
+      data: {
+        product_id: product.id,
+        qty: cartQuantity,
+      },
+    };
+    setIsLoading(true);
+    try {
+      const res = await axios.post(`/v2/api/${process.env.REACT_APP_API_PATH}/cart`, data);
+      console.log(res);
+      getCart();
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -39,30 +60,43 @@ function ProductDetail() {
                 className="btn btn-outline-dark rounded-0 border-0 py-3"
                 type="button"
                 id="button-addon1"
+                onClick={() => {
+                  setCartQuantity((pre) => (pre === 1 ? pre : pre - 1));
+                }}
               >
-                <i className="fas fa-minus"></i>
+                <i className="bi bi-dash"></i>
               </button>
             </div>
             <input
-              type="text"
+              type="number"
               className="form-control border-0 text-center my-auto shadow-none"
               placeholder=""
               aria-label="Example text with button addon"
               aria-describedby="button-addon1"
+              value={cartQuantity}
+              readOnly
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-dark rounded-0 border-0 py-3"
                 type="button"
                 id="button-addon2"
+                onClick={() => {
+                  setCartQuantity((pre) => pre + 1);
+                }}
               >
-                <i className="fas fa-plus"></i>
+                <i className="bi bi-plus"></i>
               </button>
             </div>
           </div>
-          <a href="./checkout.html" className="btn btn-dark btn-block rounded-0 py-3">
-            Lorem ipsum
-          </a>
+          <button
+            type="button"
+            className="btn btn-dark w-100 rounded-0 py-3"
+            onClick={() => addToCart()}
+            disabled={isLoading}
+          >
+            加入購物車
+          </button>
         </div>
       </div>
     </div>
