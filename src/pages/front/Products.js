@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import Pagination from '../../components/Pagination';
-import Loading from '../../components/Loading';
+import Pagination from '../components/Pagination';
+import Loading from '../components/Loading';
 
 function Products() {
   const [products, setProducts] = useState([]);
