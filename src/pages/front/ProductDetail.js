@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useOutletContext, useParams } from 'react-router-dom';
+
 function ProductDetail() {
   const [product, setProduct] = useState({});
   const [cartQuantity, setCartQuantity] = useState(1);
@@ -13,6 +14,7 @@ function ProductDetail() {
     console.log(productRes);
     setProduct(productRes.data.product);
   };
+
   const addToCart = async () => {
     const data = {
       data: {
@@ -26,8 +28,8 @@ function ProductDetail() {
       console.log(res);
       getCart();
       setIsLoading(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       setIsLoading(false);
     }
   };
@@ -35,8 +37,9 @@ function ProductDetail() {
   useEffect(() => {
     getProduct(id);
   }, [id]);
+
   return (
-    <div className="container">
+    <div className="container full-height">
       <div
         style={{
           minHeight: '400px',
@@ -60,9 +63,7 @@ function ProductDetail() {
                 className="btn btn-outline-dark rounded-0 border-0 py-3"
                 type="button"
                 id="button-addon1"
-                onClick={() => {
-                  setCartQuantity((pre) => (pre === 1 ? pre : pre - 1));
-                }}
+                onClick={() => setCartQuantity((pre) => (pre === 1 ? pre : pre - 1))}
               >
                 <i className="bi bi-dash"></i>
               </button>
@@ -73,17 +74,15 @@ function ProductDetail() {
               placeholder=""
               aria-label="Example text with button addon"
               aria-describedby="button-addon1"
-              value={cartQuantity}
               readOnly
+              value={cartQuantity}
             />
             <div className="input-group-append">
               <button
                 className="btn btn-outline-dark rounded-0 border-0 py-3"
                 type="button"
                 id="button-addon2"
-                onClick={() => {
-                  setCartQuantity((pre) => pre + 1);
-                }}
+                onClick={() => setCartQuantity((pre) => pre + 1)}
               >
                 <i className="bi bi-plus"></i>
               </button>
