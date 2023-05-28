@@ -42,7 +42,7 @@ function CartItem({ item, handleCartItem, loadingItems }) {
               ))}
             </select>
           </div>
-          <p className="mb-0 ms-auto">NT${item.final_total}</p>
+          <p className="mb-0 ms-auto">NT${Number(item.final_total.toFixed(2))}</p>
         </div>
       </div>
     </div>

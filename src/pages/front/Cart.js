@@ -65,7 +65,7 @@ function Cart() {
 
               <div className="d-flex justify-content-between mt-4">
                 <p className="mb-0 h4 fw-bold">總金額</p>
-                <p className="mb-0 h4 fw-bold">NT${cartData.final_total}</p>
+                <p className="mb-0 h4 fw-bold">NT${Number(cartData.final_total.toFixed(2))}</p>
               </div>
               <Link to="/checkout" className="btn btn-dark w-100 mt-4 rounded-0 py-3">
                 確認餐點正確
