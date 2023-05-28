@@ -130,7 +130,7 @@ function AdminCoupons() {
         </tbody>
       </table>
 
-      <Pagination pagination={pagination} changePage={getCoupons}></Pagination>
+      <Pagination pagination={pagination} onPageChange={getCoupons}></Pagination>
     </div>
   );
 }

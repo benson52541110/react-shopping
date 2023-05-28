@@ -128,7 +128,7 @@ function AdminProducts() {
         </tbody>
       </table>
 
-      <Pagination pagination={pagination} changePage={getProducts}></Pagination>
+      <Pagination pagination={pagination} onPageChange={getProducts}></Pagination>
     </div>
   );
 }
