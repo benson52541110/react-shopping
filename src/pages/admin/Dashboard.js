@@ -1,25 +1,62 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import Message from '../components/Message';
 import { MessageContext, messageReducer, initState } from '../../store/messageStore';
+import { useToken } from '../../hooks/useToken';
+
+function Navbar({ onLogout }) {
+  return (
+    <nav className="navbar navbar-expand-lg bg-dark">
+      <div className="container-fluid">
+        <p className="text-white mb-0">HEX EATS 後台管理系統</p>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+        <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <button type="button" className="btn btn-sm btn-light" onClick={onLogout}>
+                登出
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 function Dashboard() {
   const navigate = useNavigate();
+  const [token, setToken] = useToken();
+  const [isLoading, setIsLoading] = useState(true);
   const reducer = useReducer(messageReducer, initState);
+
   const logout = () => {
-    document.cookie = 'hexToken=;';
+    setToken('');
     navigate('/login');
   };
 
-  const token = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith('hexToken='))
-    ?.split('=')[1];
   axios.defaults.headers.common['Authorization'] = token;
+
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
     if (!token) {
       return navigate('/login');
     }
+
     (async () => {
       try {
         await axios.post('/v2/api/user/check');
@@ -30,35 +67,22 @@ function Dashboard() {
         }
       }
     })();
-  }, [navigate, token]);
+  }, [navigate, token, isLoading]);
+
+  useEffect(() => {
+    if (token !== null) {
+      setIsLoading(false);
+    }
+  }, [token]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <MessageContext.Provider value={reducer}>
       <Message></Message>
-      <nav className="navbar navbar-expand-lg bg-dark">
-        <div className="container-fluid">
-          <p className="text-white mb-0">HEX EATS 後台管理系統</p>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
-          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <button type="button" className="btn btn-sm btn-light" onClick={logout}>
-                  登出
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Navbar onLogout={logout} />
       <div className="d-flex" style={{ minHeight: 'calc(100vh - 56px)' }}>
         <div className="bg-light" style={{ width: '200px' }}>
           <ul className="list-group list-group-flush">
