@@ -10,6 +10,7 @@ import ProductDetail from './pages/front/ProductDetail';
 import Cart from './pages/front/Cart';
 import Checkout from './pages/front/Checkout';
 import Success from './pages/front/Success';
+import AdminOrders from './pages/admin/AdminOrders';
 function App() {
   return (
     <div className="App">
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin" element={<Dashboard />}>
           <Route path="products" element={<AdminProducts />}></Route>
           <Route path="coupons" element={<AdminCoupons />}></Route>
+          <Route path="orders" element={<AdminOrders />}></Route>
         </Route>
       </Routes>
     </div>

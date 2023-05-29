@@ -15,20 +15,26 @@ function Checkout() {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    const { name, email, tel, address } = data;
-    const form = {
-      data: {
-        user: {
-          name,
-          email,
-          tel,
-          address,
+    try {
+      const { name, email, tel, address } = data;
+      const form = {
+        data: {
+          user: {
+            name,
+            email,
+            tel,
+            address,
+          },
         },
-      },
-    };
-    const res = await axios.post(`/v2/api/${process.env.REACT_APP_API_PATH}/order`, form);
-    console.log(res);
-    navigate(`/success/${res.data.orderId}`);
+      };
+      const res = await axios.post(
+        `/v2/api/${process.env.REACT_APP_API_PATH || 'defaultPath'}/order`,
+        form
+      );
+      navigate(`/success/${res.data.orderId}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -117,9 +123,9 @@ function Checkout() {
               <h4 className="mb-4">選購餐點</h4>
               {cartData?.carts?.map((item) => {
                 return (
-                  <div className="d-flex" key="item.id">
+                  <div className="d-flex" key={item?.id}>
                     <img
-                      src={item.product.imageUrl}
+                      src={item?.product?.imageUrl}
                       alt=""
                       className="me-2"
                       style={{
@@ -130,14 +136,14 @@ function Checkout() {
                     />
                     <div className="w-100">
                       <div className="d-flex justify-content-between fw-bold">
-                        <p className="mb-0">{item.product.title}</p>
-                        <p className="mb-0">x{item.qty}</p>
+                        <p className="mb-0">{item?.product?.title}</p>
+                        <p className="mb-0">x{item?.qty}</p>
                       </div>
                       <div className="d-flex justify-content-between">
                         <p className="text-muted mb-0">
-                          <small>NT$ {item.product.price}</small>
+                          <small>NT$ {item?.product?.price}</small>
                         </p>
-                        <p className="mb-0">NT$ {item.final_total}</p>
+                        <p className="mb-0">NT$ {item?.final_total}</p>
                       </div>
                     </div>
                   </div>
@@ -145,7 +151,7 @@ function Checkout() {
               })}
               <div className="d-flex justify-content-between mt-4">
                 <p className="mb-0 h4 fw-bold">Total</p>
-                <p className="mb-0 h4 fw-bold">NT$ {cartData.final_total}</p>
+                <p className="mb-0 h4 fw-bold">NT$ {cartData?.final_total}</p>
               </div>
             </div>
           </div>
